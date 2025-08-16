@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import throttle from "./utils/throttle";
 import { NODE_HEIGHT } from "./constants";
 
 const NODE_GAP = 8;
-const PADDING_NODE = 3;
+const PADDING_NODE = 6;
 const ROW_HEIGHT = NODE_HEIGHT + NODE_GAP;
 
 import Box from "./box";
@@ -12,7 +13,7 @@ function App() {
   const windowHeight = window.innerHeight; // 뷰포트 높이
   const items = Array.from({ length: 10000 }, (_, i) => i); // 노드 개수
 
-  const frameRef = useRef<number | null>(null); //뷰포트?의 DOM
+  const frameRef = useRef<number | null>(null); // rAF ID
   const lastScrollTopRef = useRef<number>(0); // 계산용 마지막 스크롤 위치
   const lastRangeRef = useRef(range); // 계산용 마지막 범위
 
@@ -40,14 +41,14 @@ function App() {
     }
   };
 
-  const onScroll = () => {
+  const onScroll = throttle(() => {
     if (typeof window === "undefined") return;
 
     lastScrollTopRef.current = window.scrollY;
     if (frameRef.current == null) {
       frameRef.current = requestAnimationFrame(flush);
     }
-  };
+  }, 32);
 
   const slice = useMemo(() => {
     const nodes: React.ReactNode[] = [];
