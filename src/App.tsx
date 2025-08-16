@@ -9,13 +9,16 @@ const ROW_HEIGHT = NODE_HEIGHT + NODE_GAP;
 import Box from "./box";
 function App() {
   const [range, setRange] = useState({ start: 0, end: 0 }); // 시작 끝 노드 인덱스
+  const lastRangeRef = useRef(range); // 계산용 마지막 범위
 
   const windowHeight = window.innerHeight; // 뷰포트 높이
   const items = Array.from({ length: 10000 }, (_, i) => i); // 노드 개수
 
   const frameRef = useRef<number | null>(null); // rAF ID
   const lastScrollTopRef = useRef<number>(0); // 계산용 마지막 스크롤 위치
-  const lastRangeRef = useRef(range); // 계산용 마지막 범위
+
+  const offsetY = range.start * ROW_HEIGHT;
+  const totalHeight = items.length * ROW_HEIGHT;
 
   const computeRange = (scrollTop: number, viewportHeight: number) => {
     const startIdx = Math.floor(scrollTop / ROW_HEIGHT);
@@ -71,9 +74,6 @@ function App() {
       if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
     };
   }, [items.length]);
-
-  const offsetY = range.start * ROW_HEIGHT;
-  const totalHeight = items.length * ROW_HEIGHT;
 
   return (
     <div className="w-full min-h-screen">
