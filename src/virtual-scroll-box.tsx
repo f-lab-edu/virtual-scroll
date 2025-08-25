@@ -1,5 +1,5 @@
 import Box from "./Box";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const BOX_HEIGHT = 80;
 const BOX_GAP = 4;
@@ -9,23 +9,34 @@ const VirtualScrollBox = () => {
   const items = Array.from({ length: 1000 }, (_, i) => i); // 노드 개수
   const [startIdx, setStartIdx] = useState<number>(0);
   const [visibleNodeCount, setVisibleNodeCount] = useState<number>(0);
+  const rafId = useRef<number | null>(null);
 
   const computeRange = () => {
-    const scrollTop = window.scrollY;
-    const startIdx = Math.floor(scrollTop / NODE_HEIGHT);
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+    }
+    rafId.current = requestAnimationFrame(() => {
+      const scrollTop = window.scrollY;
+      const startIdx = Math.floor(scrollTop / NODE_HEIGHT);
 
-    setStartIdx(startIdx);
+      setStartIdx(startIdx);
+      rafId.current = null;
+    });
   };
 
   useEffect(() => {
     // 현재 출력 가능한 노드 개수 계산
     const windowHeight = window.innerHeight;
-    setVisibleNodeCount(Math.floor(windowHeight / NODE_HEIGHT));
+    const count = Math.floor(windowHeight / NODE_HEIGHT);
+    setVisibleNodeCount(count);
 
     computeRange();
     window.addEventListener("scroll", computeRange, { passive: true });
     return () => {
       window.removeEventListener("scroll", computeRange);
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
     };
   }, []);
 
