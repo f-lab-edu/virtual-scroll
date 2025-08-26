@@ -15,10 +15,11 @@ const VirtualScrollBox = () => {
     if (rafId.current) {
       cancelAnimationFrame(rafId.current);
     }
-    rafId.current = requestAnimationFrame(() => {
-      const scrollTop = window.scrollY;
-      const startIdx = Math.floor(scrollTop / NODE_HEIGHT);
+    const scrollTop = window.scrollY;
+    let startIdx = Math.floor(scrollTop / NODE_HEIGHT) - PADDING_NODE;
+    if (startIdx < 0) startIdx = 0;
 
+    rafId.current = requestAnimationFrame(() => {
       setStartIdx(startIdx);
       rafId.current = null;
     });
