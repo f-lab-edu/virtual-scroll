@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 
 const BOX_HEIGHT = 80;
 const BOX_GAP = 4;
+const PADDING_NODE = 4;
 const NODE_HEIGHT = BOX_HEIGHT + BOX_GAP;
 
 const VirtualScrollBox = () => {
