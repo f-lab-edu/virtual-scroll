@@ -7,7 +7,7 @@ const PADDING_NODE = 4;
 const NODE_HEIGHT = BOX_HEIGHT + BOX_GAP;
 
 const VirtualScrollBox = () => {
-  const items = Array.from({ length: 1000 }, (_, i) => i); // 노드 개수
+  const items = Array.from({ length: 100000 }, (_, i) => i); // 노드 개수
   const [startIdx, setStartIdx] = useState<number>(0);
   const [visibleNodeCount, setVisibleNodeCount] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -40,7 +40,7 @@ const VirtualScrollBox = () => {
     });
   };
 
-    // 현재 출력 가능한 노드 개수 계산
+  // 현재 출력 가능한 노드 개수 계산
   const computeVisibleCount = (height: number) => {
     const count = Math.floor(height / NODE_HEIGHT) + PADDING_NODE * 2;
     setVisibleNodeCount(count);
@@ -57,7 +57,7 @@ const VirtualScrollBox = () => {
       computeVisibleCount(
         containerRef.current.clientHeight - (paddingTop + paddingBottom)
       );
-    computeRange();
+      computeRange();
 
       containerRef.current.addEventListener("scroll", computeRange, {
         passive: true,
@@ -74,20 +74,20 @@ const VirtualScrollBox = () => {
 
   return (
     <div ref={containerRef} className={`w-full h-screen overflow-y-auto`}>
-    <div
+      <div
         className="flex flex-col gap-2"
-      style={{
-        paddingTop: `${startIdx * NODE_HEIGHT}px`,
-        paddingBottom: `${
-          (items.length - 1 - (startIdx + visibleNodeCount)) * NODE_HEIGHT
-        }px`,
-      }}
-    >
-      {items.map(
-        (v, i) =>
-          i >= startIdx &&
-          i <= startIdx + visibleNodeCount && <Box key={i}>{v}</Box>
-      )}
+        style={{
+          paddingTop: `${startIdx * NODE_HEIGHT}px`,
+          paddingBottom: `${
+            (items.length - 1 - (startIdx + visibleNodeCount)) * NODE_HEIGHT
+          }px`,
+        }}
+      >
+        {items.map(
+          (v, i) =>
+            i >= startIdx &&
+            i <= startIdx + visibleNodeCount && <Box key={i}>{v}</Box>
+        )}
       </div>
     </div>
   );
