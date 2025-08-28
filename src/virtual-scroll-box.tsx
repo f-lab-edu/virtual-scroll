@@ -30,7 +30,9 @@ const VirtualScrollBox = () => {
 
     const scrollTop = containerRef.current.scrollTop;
     let startIdx = Math.floor(scrollTop / NODE_HEIGHT) - PADDING_NODE;
-    if (startIdx < 0) startIdx = 0;
+    if (startIdx < 0) {
+      startIdx = 0;
+    }
 
     rafId.current = requestAnimationFrame(() => {
       setStartIdx(startIdx);
